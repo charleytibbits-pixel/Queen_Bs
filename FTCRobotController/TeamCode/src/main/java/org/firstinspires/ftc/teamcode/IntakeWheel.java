@@ -1,57 +1,49 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name = "IntakeWheel", group = "Linear OpMode")
-public class IntakeWheel extends LinearOpMode {
+public class IntakeWheel {
 
     // Declare the DC Motor
     private DcMotor intakeMotor = null;
 
+    // Telemetry passed in from the OpMode
+    private Telemetry telemetry = null;
+
     // Define speed constants
-    private static final double INTAKE_SPEED  = 1.0;   // 100% power for collection
-    private static final double OUTTAKE_SPEED = -0.6;  // 60% power for controlled ejection
-    private static final double MOTOR_OFF     = 0.0;   // Stopped
+    public static final double INTAKE_SPEED = 1.0; // 100% power for collection
+    public static final double OUTTAKE_SPEED = -0.6; // 60% power for controlled ejection
+    public static final double MOTOR_OFF = 0.0; // Stopped
 
-    @Override
-    public void runOpMode() {
+    public void init(HardwareMap hardwareMap, Telemetry telemetry) {
+// Save the OpMode's telemetry so this class can use it
+        this.telemetry = telemetry;
 
-        // Initialize hardware mapping (ensure "intake" matches your Driver Station config)
+// Name must EXACTLY match the motor name in your Driver Hub configuration
         intakeMotor = hardwareMap.get(DcMotor.class, "IntakeWheel");
 
-        // Direction configuration: change to REVERSE if the motor spins the wrong way
+// Change to REVERSE if the motor spins the wrong way
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        // Intakes do not require encoders; run on pure voltage/power control
+// Intakes do not need encoders
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // FLOAT allows the wheels to spin down naturally, saving gear wear
+// FLOAT lets the wheels spin down naturally
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         telemetry.addData("Status", "IntakeWheel Initialized!");
         telemetry.update();
-        waitForStart();
-
-        while (opModeIsActive()) {
-
-            // Control loop for driving the intake wheels via bumpers
-            if (gamepad1.right_bumper) {
-                intakeMotor.setPower(INTAKE_SPEED);
-            }
-            else if (gamepad1.left_bumper) {
-                intakeMotor.setPower(OUTTAKE_SPEED);
-            }
-            else {
-                intakeMotor.setPower(MOTOR_OFF);
-            }
-
-            // Simple telemetry readout for debugging
-            telemetry.addData("Intake Power", intakeMotor.getPower());
-            telemetry.addData("Controls", "RB = Intake | LB = Outtake");
-            telemetry.update();
-        }
     }
+
+    public void intake(double speed) {
+        intakeMotor.setPower(speed);
+
+// Simple telemetry readout for debugging
+        telemetry.addData("Intake Power", intakeMotor.getPower());
+    }
+
+
 }
