@@ -9,12 +9,14 @@ public class ArcadeDriveOpMode extends OpMode {
 
     ArcadeDrive drive = new ArcadeDrive();
     IntakeWheel intake = new IntakeWheel();
+    LaunchWheel launch = new LaunchWheel ();
     double throttle, strafe, spin;
 
     @Override
     public void init() {
         drive.init(hardwareMap);
         intake.init(hardwareMap, telemetry);
+        launch.init(hardwareMap);
     }
 
     @Override
@@ -38,6 +40,14 @@ public class ArcadeDriveOpMode extends OpMode {
         }
         else {
             intake.intake(0);
+        }
+        //launch wheel code
+        if (gamepad1.b) {
+            launch.launch(1);
+        }
+        else {
+            launch.launch(0);
+
         }
     }
 }
