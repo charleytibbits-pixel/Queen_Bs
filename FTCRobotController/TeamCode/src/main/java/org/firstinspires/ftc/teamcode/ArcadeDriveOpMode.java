@@ -9,6 +9,7 @@ public class ArcadeDriveOpMode extends OpMode {
 
     ArcadeDrive drive = new ArcadeDrive();
     IntakeWheel intake = new IntakeWheel();
+    LaunchWheel launch = new LaunchWheel ();
 
     RevolvingDoor revolve = new RevolvingDoor();
     double throttle, strafe, spin;
@@ -17,6 +18,7 @@ public class ArcadeDriveOpMode extends OpMode {
         drive.init(hardwareMap);
         intake.init(hardwareMap, telemetry);
         revolve.init(hardwareMap, telemetry);
+        launch.init(hardwareMap);
     }
 
     public void loop() {
@@ -39,6 +41,14 @@ public class ArcadeDriveOpMode extends OpMode {
         }
         else {
             intake.intake(0);
+        }
+        //launch wheel code
+        if (gamepad1.b) {
+            launch.launch(1);
+        }
+        else {
+            launch.launch(0);
+
         }
 
         if (gamepad1.right_trigger >0){
