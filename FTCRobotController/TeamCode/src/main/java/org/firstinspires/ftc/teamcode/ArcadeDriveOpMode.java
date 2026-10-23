@@ -9,15 +9,16 @@ public class ArcadeDriveOpMode extends OpMode {
 
     ArcadeDrive drive = new ArcadeDrive();
     IntakeWheel intake = new IntakeWheel();
+
+    RevolvingDoor revolve = new RevolvingDoor();
     double throttle, strafe, spin;
 
-    @Override
     public void init() {
         drive.init(hardwareMap);
         intake.init(hardwareMap, telemetry);
+        revolve.init(hardwareMap, telemetry);
     }
 
-    @Override
     public void loop() {
         throttle = gamepad1.left_stick_y *-0.5;  // forward/backward
         strafe   = gamepad1.right_stick_x;   // left/right (side to side)
@@ -31,13 +32,20 @@ public class ArcadeDriveOpMode extends OpMode {
                 .addData("y", gamepad1.right_stick_y);
         drive.drive(throttle, spin);
         if (gamepad1.right_bumper) {
-            intake.intake(0.5);
+            intake.intake(0.8);
         }
         else if (gamepad1.left_bumper) {
             intake.intake(-0.5);
         }
         else {
             intake.intake(0);
+        }
+
+        if (gamepad1.right_trigger >0){
+            revolve.revolve(-0.5);
+        }
+        else {
+            revolve.revolve(0);
         }
     }
 }

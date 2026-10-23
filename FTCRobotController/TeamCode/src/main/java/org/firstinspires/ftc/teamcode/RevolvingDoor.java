@@ -1,38 +1,34 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+import androidx.annotation.NonNull;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
-@TeleOp(name = "Servo Trigger Control", group = "TeleOp")
+import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
+import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class RevolvingDoor {
 
-    private Servo myServo;
+    private CRServo myServo;
+    private Telemetry telemetry;
 
-    @Override
-    public void init() {
+    public void init(@NonNull HardwareMap hardwareMap, Telemetry telemetry) {
         // Initialize the servo using the name configured in your Robot Controller app
-        myServo = hardwareMap.get(Servo.class, "servoName");
+        myServo = hardwareMap.get(CRServo.class, "crServo");
 
         // Optional: Set an initial position (e.g., 0.0)
-        myServo.setPosition(0.0);
+        this.telemetry = telemetry;
     }
 
-    @Override
-    public void loop() {
+
+    public void revolve(double speed) {
         // Read the right trigger value (returns 0.0 when unpressed, up to 1.0 when fully pressed)
-        float rightTriggerValue = gamepad1.right_trigger;
 
         // Set the servo position proportionally to how far the trigger is pressed
-        myServo.setPosition(rightTriggerValue);
+        myServo.setPower(speed);
 
         // Optional: Send telemetry back to the Driver Station for debugging
-        telemetry.addData("Trigger Value", rightTriggerValue);
-        telemetry.addData("Servo Position", myServo.getPosition());
-        telemetry.update();
     }
 }

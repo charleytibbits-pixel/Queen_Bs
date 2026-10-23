@@ -14,7 +14,7 @@ public class IntakeWheel {
     private Telemetry telemetry = null;
 
     // Define speed constants
-    public static final double INTAKE_SPEED = 1.0; // 100% power for collection
+    public static final double INTAKE_SPEED = 0.6; // 100% power for collection
     public static final double OUTTAKE_SPEED = -0.6; // 60% power for controlled ejection
     public static final double MOTOR_OFF = 0.0; // Stopped
 
