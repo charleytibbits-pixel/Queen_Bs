@@ -44,7 +44,7 @@ public class ArcadeDriveOpMode extends OpMode {
         }
         //launch wheel code
         if (gamepad1.b) {
-            launch.launch(1);
+            launch.launch(0.45 );
         }
         else {
             launch.launch(0);
