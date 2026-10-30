@@ -1,4 +1,3 @@
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -13,6 +12,7 @@ public class ArcadeDriveOpMode extends OpMode {
 
     RevolvingDoor revolve = new RevolvingDoor();
     double throttle, strafe, spin;
+    boolean flywheelOn = false;   // remembers if the flywheel is on or off
 
     public void init() {
         drive.init(hardwareMap);
@@ -42,14 +42,18 @@ public class ArcadeDriveOpMode extends OpMode {
         else {
             intake.intake(0);
         }
-        //launch wheel code
-        if (gamepad1.b) {
-            launch.launch(1);
+        //launch wheel code: press B once to start, press B again to stop
+        if (gamepad1.bWasPressed()) {
+            flywheelOn = !flywheelOn;
+        }
+        if (flywheelOn) {
+            launch.launch(LaunchWheel.HIGH_VELOCITY);
         }
         else {
             launch.launch(0);
-
         }
+        telemetry.addData("Flywheel speed", "%.0f", launch.getVelocity());
+        telemetry.addData("Ready to shoot", launch.isAtSpeed());
 
         if (gamepad1.right_trigger >0){
             revolve.revolve(-0.5);

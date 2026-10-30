@@ -1,35 +1,36 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.*;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+public class LaunchWheel {
+    public static double P = 1.5, F = 12;          // tuned values
+    public static double NOMINAL_VOLTAGE = 12.5; // battery voltage when you tuned
+    public static double HIGH_VELOCITY = 1500, LOW_VELOCITY = 900;
 
-//@TeleOp(name = "Launch Wheel", group = "Linear OpMode")
-public class LaunchWheel  {
-
-    // Hardware declarations
-    private DcMotorEx flywheelMotor;
-
-    // Target velocity constants (in encoder ticks per second)
-    private static final double TARGET_VELOCITY_MAX = 8000.0;
-    private static final double VELOCITY_TOLERANCE = 100.0; // Allowed margin to check if flywheel is fast enough
+    private DcMotorEx motor;
+    private VoltageSensor battery;
+    private double target = 0;
 
     public void init(HardwareMap hardwareMap) {
-// Save the OpMode's telemetry so this class can use it
-        flywheelMotor = hardwareMap.get(DcMotorEx.class, "Launch_motor");
-
+        motor = hardwareMap.get(DcMotorEx.class, "Launch_motor");
+        motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motor.setDirection(DcMotorSimple.Direction.FORWARD);
+        battery = hardwareMap.voltageSensor.iterator().next();
     }
-    public void launch(double speed) {
-        // Initialize hardware from the robot configuration screen
 
-
-            flywheelMotor.setPower(speed);
+    /** Set speed in ticks/sec (0 = stop). Call every loop so it keeps adjusting for the battery. */
+    public void launch(double velocity) {
+        target = velocity;
+        double scale = NOMINAL_VOLTAGE / battery.getVoltage();
+        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER,
+                new PIDFCoefficients(P * scale, 0, 0, F * scale));
+        motor.setVelocity(velocity);
     }
+
+    public boolean isAtSpeed() {
+        return target > 0 && Math.abs(target - motor.getVelocity()) < 100;
+    }
+
+    public double getVelocity() { return motor.getVelocity(); }
+    public double getVoltage()  { return battery.getVoltage(); }
 }
-
